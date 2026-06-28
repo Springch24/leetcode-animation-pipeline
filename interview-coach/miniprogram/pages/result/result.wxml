@@ -1,0 +1,57 @@
+<view class="container">
+  <!-- 顶部信息 -->
+  <view class="result-header">
+    <text class="result-company">{{company}} · {{role}}</text>
+    <text class="result-count">共 {{questions.length}} 道高频题</text>
+    <view class="result-stats">
+      <text class="stat-item">🎬 有视频: {{videoCount}}</text>
+      <text class="stat-item">⏳ 待上线: {{questions.length - videoCount}}</text>
+    </view>
+  </view>
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-item {{filterDifficulty === '全部' ? 'active' : ''}}" bindtap="setFilter" data-type="difficulty" data-val="全部">全部</view>
+    <view class="filter-item tag-easy {{filterDifficulty === '简单' ? 'active' : ''}}" bindtap="setFilter" data-type="difficulty" data-val="简单">简单</view>
+    <view class="filter-item tag-medium {{filterDifficulty === '中等' ? 'active' : ''}}" bindtap="setFilter" data-type="difficulty" data-val="中等">中等</view>
+    <view class="filter-item tag-hard {{filterDifficulty === '困难' ? 'active' : ''}}" bindtap="setFilter" data-type="difficulty" data-val="困难">困难</view>
+  </view>
+  <view class="filter-bar sub">
+    <view class="filter-item {{filterVideo === '全部' ? 'active' : ''}}" bindtap="setFilter" data-type="video" data-val="全部">全部</view>
+    <view class="filter-item {{filterVideo === '有视频' ? 'active' : ''}}" bindtap="setFilter" data-type="video" data-val="有视频">🎬 有视频</view>
+    <view class="filter-item {{filterVideo === '待上线' ? 'active' : ''}}" bindtap="setFilter" data-type="video" data-val="待上线">⏳ 待上线</view>
+  </view>
+
+  <!-- 题目列表 -->
+  <view class="question-list">
+    <view
+      wx:for="{{filteredQuestions}}"
+      wx:key="id"
+      class="question-item"
+      bindtap="goVideo"
+      data-id="{{item.id}}"
+      data-has-video="{{item.has_video}}"
+    >
+      <view class="q-left">
+        <text class="q-id">#{{item.id}}</text>
+        <view class="q-info">
+          <text class="q-name">{{item.name}}</text>
+          <view class="q-tags">
+            <text class="q-diff {{item.difficulty === '简单' ? 'tag-easy' : item.difficulty === '中等' ? 'tag-medium' : 'tag-hard'}}">{{item.difficulty}}</text>
+            <text class="q-tag">{{item.tag}}</text>
+            <text class="q-freq">🔥 {{item.count}}次</text>
+          </view>
+        </view>
+      </view>
+      <view class="q-right">
+        <text wx:if="{{item.has_video}}" class="badge-video">🎬 看视频</text>
+        <text wx:else class="badge-pending">待上线</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{filteredQuestions.length === 0}}">
+    <text class="empty-text">没有匹配的题目</text>
+  </view>
+</view>

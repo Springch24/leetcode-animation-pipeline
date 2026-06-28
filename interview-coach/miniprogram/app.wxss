@@ -1,0 +1,73 @@
+/* 全局样式 - 深色科技风 */
+page {
+  background-color: #060b14;
+  color: #dce4f0;
+  font-family: -apple-system, PingFang SC, Helvetica Neue, sans-serif;
+  min-height: 100vh;
+}
+
+/* 通用卡片 */
+.card {
+  background: #0d1326;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin: 16rpx 24rpx;
+}
+
+/* 通用按钮 */
+.btn-primary {
+  background: linear-gradient(135deg, #FCA311, #e8910a);
+  color: #060b14;
+  border-radius: 12rpx;
+  padding: 20rpx 48rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+}
+
+.btn-secondary {
+  background: #162040;
+  color: #FCA311;
+  border-radius: 12rpx;
+  padding: 20rpx 48rpx;
+  font-size: 28rpx;
+  text-align: center;
+  border: 2rpx solid #FCA311;
+}
+
+/* 视频徽标 */
+.badge-video {
+  background: #FCA311;
+  color: #060b14;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  font-weight: 600;
+}
+
+.badge-pending {
+  background: #1a2a4a;
+  color: #4a6080;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+/* 难度标签 */
+.tag-easy {
+  color: #4ade80;
+}
+.tag-medium {
+  color: #fbbf24;
+}
+.tag-hard {
+  color: #f87171;
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background: #1a2a4a;
+  margin: 16rpx 0;
+}

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, height=1920" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1080px; height: 1920px; overflow: hidden;
+      background: #0D1321;
+      font-family: 'Courier New', monospace;
+    }
+
+    .bg-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(61,90,128,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(61,90,128,0.06) 1px, transparent 1px);
+      background-size: 60px 60px; z-index: 0;
+    }
+    .bg-glow {
+      position: absolute; top: -200px; right: -200px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(65,90,119,0.15) 0%, transparent 70%);
+      border-radius: 50%; z-index: 0;
+    }
+    .bg-glow2 {
+      position: absolute; bottom: -300px; left: -200px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(119,141,169,0.10) 0%, transparent 70%);
+      border-radius: 50%; z-index: 0;
+    }
+
+    /* === COMMON scene positioning === */
+    .scene-layer {
+      position: absolute; inset: 0; z-index: 1;
+      opacity: 0; visibility: hidden;
+    }
+
+    /* === SCENE 1: Title === */
+    .s1-wrap { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+    .s1-badge { font-size: 15px; letter-spacing: 0.15em; color: #778DA9; border: 1.5px solid rgba(119,141,169,0.3); padding: 8px 28px; border-radius: 4px; margin-bottom: 40px; display: inline-block; }
+    .s1-title { font-size: 30px; font-weight: 800; color: #F0EBD8; letter-spacing: -0.03em; }
+    .s1-subtitle { font-size: 13px; font-weight: 300; color: #778DA9; margin-top: 24px; }
+    .s1-tag { font-size: 15px; color: #415A77; margin-top: 36px; letter-spacing: 0.06em; }
+
+    /* === SCENE 2: Problem === */
+    .s2-container { position: absolute; inset: 80px 40px; display: flex; flex-direction: column; gap: 30px; }
+    .s2-left { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .s2-label { font-size: 13px; color: #415A77; letter-spacing: 0.12em; margin-bottom: 24px; }
+    .s2-question { font-size: 30px; font-weight: 700; color: #F0EBD8; line-height: 1.3; }
+    .s2-constraint { font-size: 15px; color: #778DA9; margin-top: 28px; line-height: 1.5; }
+    .s2-right { flex: 1.2; display: flex; flex-direction: column; justify-content: center; gap: 24px; }
+    .s2-array-box { background: rgba(27,38,59,0.8); border: 1.5px solid rgba(65,90,119,0.4); border-radius: 8px; padding: 20px 24px; }
+    .s2-array-label { font-size: 13px; color: #415A77; margin-bottom: 20px; }
+    .s2-array-row { display: flex; gap: 14px; }
+    .s2-cell { width: 48px; height: 48px; border-radius: 6px; background: rgba(65,90,119,0.2); border: 1.5px solid rgba(65,90,119,0.3); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #F0EBD8; }
+    .s2-target-box { background: rgba(27,38,59,0.8); border: 1px solid rgba(252,163,17,0.3); border-radius: 6px; padding: 24px 36px; display: inline-flex; gap: 16px; }
+    .s2-target-label { font-size: 13px; color: #778DA9; }
+    .s2-target-value { font-size: 13px; font-weight: 700; color: #FCA311; }
+
+    /* === SCENE 3: Solution === */
+    .s3-container { position: absolute; inset: 60px 30px; display: flex; flex-direction: column; gap: 24px; }
+    .s3-code-panel { flex: 1; background: rgba(13,25,45,0.9); border: 1px solid rgba(65,90,119,0.3); border-radius: 10px; padding: 24px; }
+    .s3-code-header { font-size: 13px; color: #415A77; letter-spacing: 0.1em; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid rgba(65,90,119,0.15); }
+    .s3-code-line { font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.8; color: rgba(240,235,216,0.25); padding: 2px 8px; margin: 0 -8px; border-radius: 3px; }
+    .s3-code-line.active { color: #F0EBD8; background: rgba(252,163,17,0.08); }
+    .s3-code-line .kw { color: #569CD6; }
+    .s3-code-line .fn { color: #DCDCAA; }
+    .s3-viz-panel { flex: 1.3; display: flex; flex-direction: column; gap: 32px; }
+    .s3-hash-title { font-size: 13px; color: #415A77; letter-spacing: 0.1em; }
+    .s3-hash-area { flex: 1; background: rgba(27,38,59,0.6); border: 1px solid rgba(65,90,119,0.25); border-radius: 10px; padding: 20px; display: flex; flex-wrap: wrap; gap: 16px; align-content: flex-start; position: relative; }
+    .s3-hash-entry { background: rgba(65,90,119,0.15); border: 1.5px solid rgba(65,90,119,0.25); border-radius: 8px; padding: 10px 16px; text-align: center; opacity: 0; }
+    .s3-hash-entry.highlight { border-color: #FCA311; background: rgba(252,163,17,0.1); }
+    .s3-hash-key { font-size: 15px; font-weight: 700; color: #FCA311; }
+    .s3-hash-val { font-size: 13px; color: #778DA9; margin-top: 4px; }
+    .s3-iter-row { display: flex; gap: 16px; align-items: center; font-size: 15px; color: #778DA9; }
+    .s3-cur-num { display: inline-block; background: rgba(252,163,17,0.15); border: 1px solid rgba(252,163,17,0.3); border-radius: 6px; padding: 6px 16px; font-size: 15px; font-weight: 700; color: #FCA311; }
+    .s3-result { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 26px; font-weight: 800; color: #FCA311; opacity: 0; }
+
+    /* === SCENE 4: Complexity === */
+    .s4-container { position: absolute; inset: 80px 40px; display: flex; flex-direction: column; gap: 24px; align-items: center; }
+    .s4-card { flex: 1; background: rgba(27,38,59,0.8); border: 1px solid rgba(65,90,119,0.3); border-radius: 12px; padding: 32px 28px; text-align: center; }
+    .s4-card-icon { font-size: 26px; margin-bottom: 20px; }
+    .s4-card-label { font-size: 15px; color: #415A77; letter-spacing: 0.1em; margin-bottom: 16px; }
+    .s4-card-value { font-size: 30px; font-weight: 800; color: #FCA311; }
+    .s4-card-desc { font-size: 15px; color: #778DA9; margin-top: 14px; line-height: 1.5; }
+    .s4-divider { width: 80%; height: 1px; background: rgba(65,90,119,0.25); }
+    .s4-summary { position: absolute; bottom: 40px; left: 40px; right: 40px; font-size: 15px; color: #778DA9; text-align: center; line-height: 1.6; }
+
+    /* === SCENE 5: CTA === */
+    .s5-container { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; }
+    .s5-cta-main { font-size: 30px; font-weight: 800; color: #F0EBD8; letter-spacing: -0.02em; }
+    .s5-cta-sub { font-size: 15px; color: #778DA9; letter-spacing: 0.04em; }
+    .s5-cta-icons { display: flex; flex-direction: column; gap: 14px; }
+    .s5-cta-icon { font-size: 13px; color: #415A77; padding: 10px 20px; border: 1.5px solid rgba(65,90,119,0.3); border-radius: 8px; letter-spacing: 0.06em; }
+    .s5-footer { position: absolute; bottom: 30px; font-size: 13px; color: #415A77; letter-spacing: 0.08em; }
+  </style>
+</head>
+<body>
+  <div data-composition-id="test" data-start="0" data-width="1080" data-height="1920">
+
+    <!-- Narration audio track -->
+    <audio id="narration" data-track-index="0" data-start="0" src="/Users/sring24/Documents/Codex/2026-05-17/new-chat-3/leetcode-video/narration.wav" preload="auto"></audio>
+
+
+    <!-- Background layers (always visible) -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow" id="bg-glow"></div>
+    <div class="bg-glow2" id="bg-glow2"></div>
+
+    <!-- ===== SCENE 1: Title (0s-5s) ===== -->
+    <div id="scene1" style="position:absolute;inset:0;z-index:1;opacity:0;visibility:hidden">
+      <div class="s1-wrap">
+        <div class="s1-badge" id="s1-badge">LeetCode 热题 100</div>
+        <div class="s1-title" id="s1-title">Two Sum</div>
+        <div class="s1-subtitle" id="s1-subtitle">动画图解 · 哈希表</div>
+        <div class="s1-tag" id="s1-tag">#1 · 简单 · 数组 / 哈希表</div>
+      </div>
+    </div>
+
+    <!-- ===== SCENE 2: Problem (5s-20s) ===== -->
+    <div id="scene2" style="position:absolute;inset:0;z-index:1;opacity:0;visibility:hidden">
+      <div class="s2-container">
+        <div class="s2-left">
+          <div class="s2-label" id="s2-label">题目描述</div>
+          <div class="s2-question" id="s2-question">
+            给定一个整数数组<br/>
+            <span style="color:#FCA311;">nums</span> 和一个目标值<br/>
+            <span style="color:#FCA311;">target</span>，找出<br/>
+            和为 target 的两个数，<br/>
+            返回它们的下标。
+          </div>
+          <div class="s2-constraint" id="s2-constraint">
+            ⚡ 每种输入只对应一个答案。<br/>
+            ⚡ 不能重复使用同一个元素。
+          </div>
+        </div>
+        <div class="s2-right">
+          <div class="s2-array-box" id="s2-array-box">
+            <div class="s2-array-label">nums = [2, 7, 11, 15]</div>
+            <div class="s2-array-row">
+              <div class="s2-cell" id="s2-n0">2</div>
+              <div class="s2-cell" id="s2-n1">7</div>
+              <div class="s2-cell" id="s2-n2">11</div>
+              <div class="s2-cell" id="s2-n3">15</div>
+            </div>
+          </div>
+          <div class="s2-target-box" id="s2-target-box">
+            <span class="s2-target-label">target =</span>
+            <span class="s2-target-value">9</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SCENE 3: Solution (20s-50s) ===== -->
+    <div id="scene3" style="position:absolute;inset:0;z-index:1;opacity:0;visibility:hidden">
+      <div class="s3-container">
+        <div class="s3-code-panel" id="s3-code-panel">
+          <div class="s3-code-header">solution.py</div>
+          <div class="s3-code-line" id="l1"><span class="kw">def</span> <span class="fn">twoSum</span>(nums, target):</div>
+          <div class="s3-code-line" id="l2">&nbsp;&nbsp;hashmap = {}</div>
+          <div class="s3-code-line" id="l3">&nbsp;&nbsp;<span class="kw">for</span> i, num <span class="kw">in</span> <span class="fn">enumerate</span>(nums):</div>
+          <div class="s3-code-line" id="l4">&nbsp;&nbsp;&nbsp;&nbsp;complement = target - num</div>
+          <div class="s3-code-line" id="l5">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> complement <span class="kw">in</span> hashmap:</div>
+          <div class="s3-code-line" id="l6">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> [hashmap[complement], i]</div>
+          <div class="s3-code-line" id="l7">&nbsp;&nbsp;&nbsp;&nbsp;hashmap[num] = i</div>
+        </div>
+        <div class="s3-viz-panel">
+          <div class="s3-hash-title">HashMap</div>
+          <div class="s3-hash-area" id="s3-hash-area">
+            <div class="s3-hash-entry" id="he-2"><div class="s3-hash-key">2</div><div class="s3-hash-val">→ 0</div></div>
+            <div class="s3-hash-entry" id="he-7"><div class="s3-hash-key" style="color:#4EC9B0;">7</div><div class="s3-hash-val">→ 1</div></div>
+            <div class="s3-hash-entry" id="he-11"><div class="s3-hash-key">11</div><div class="s3-hash-val">→ 2</div></div>
+            <div class="s3-hash-entry" id="he-15"><div class="s3-hash-key">15</div><div class="s3-hash-val">→ 3</div></div>
+            <div class="s3-result" id="s3-result">Result: [0, 1]</div>
+          </div>
+          <div class="s3-iter-row">
+            <span>num = </span><span class="s3-cur-num" id="s3-cur-num">2</span>
+            <span>complement = </span><span style="color:#FCA311;" id="s3-complement">7</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SCENE 4: Complexity (50s-70s) ===== -->
+    <div id="scene4" style="position:absolute;inset:0;z-index:1;opacity:0;visibility:hidden">
+      <div class="s4-container">
+        <div class="s4-card" id="s4-card1">
+          <div class="s4-card-icon">⏱</div>
+          <div class="s4-card-label">时间复杂度</div>
+          <div class="s4-card-value">O(n)</div>
+          <div class="s4-card-desc">一次遍历，哈希表<br/>查找 O(1)，总计<br/>线性时间</div>
+        </div>
+        <div class="s4-divider" id="s4-divider"></div>
+        <div class="s4-card" id="s4-card2">
+          <div class="s4-card-icon">💾</div>
+          <div class="s4-card-label">空间复杂度</div>
+          <div class="s4-card-value">O(n)</div>
+          <div class="s4-card-desc">哈希表最坏情况<br/>存储 n 个元素，<br/>线性空间</div>
+        </div>
+      </div>
+      <div class="s4-summary" id="s4-summary">
+        核心思想：用空间换时间 —<br/>
+        把 O(n²) 的暴力枚举优化成一次遍历的 O(n) 解法。
+      </div>
+    </div>
+
+    <!-- ===== SCENE 5: CTA (70s-80s) ===== -->
+    <div id="scene5" style="position:absolute;inset:0;z-index:1;opacity:0;visibility:hidden">
+      <div class="s5-container">
+        <div class="s5-cta-main" id="s5-cta-main">挑战下一题</div>
+        <div class="s5-cta-sub" id="s5-cta-sub">下期预告：三数之和 · 盛最多水的容器</div>
+        <div class="s5-cta-icons" id="s5-cta-icons">
+          <div class="s5-cta-icon">👍 Like</div>
+          <div class="s5-cta-icon">⭐ Follow</div>
+          <div class="s5-cta-icon">💬 Comment</div>
+        </div>
+      </div>
+      <div class="s5-footer" id="s5-footer">LeetCode 热题 100 · Animated Tutorial Series</div>
+    </div>
+
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+
+    // ===== AMBIENT BACKGROUND =====
+    tl.to("#bg-glow", { scale: 1.06, duration: 84, ease: "none" }, 0);
+    tl.to("#bg-glow2", { x: 40, y: -30, duration: 84, ease: "none" }, 0);
+
+    // ===== SCENE 1: 标题 (0s-6s) =====
+    tl.set("#scene1", { opacity: 1, visibility: "visible" }, 0);
+    tl.from("#s1-badge", { y: -40, opacity: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+    tl.from("#s1-title", { scale: 0.85, opacity: 0, duration: 0.7, ease: "back.out(1.4)" }, 0.4);
+    tl.from("#s1-subtitle", { opacity: 0, y: 20, duration: 0.5, ease: "power2.out" }, 0.9);
+    tl.from("#s1-tag", { opacity: 0, duration: 0.5, ease: "power2.out" }, 1.3);
+    tl.to("#scene1", { opacity: 0, duration: 0.3, ease: "power2.in" }, 5.5);
+    tl.set("#scene1", { visibility: "hidden" }, 6.0);
+
+    // ===== SCENE 2: 题目描述 (6s-25.7s) =====
+    tl.set("#scene2", { opacity: 1, visibility: "visible" }, 6);
+    tl.from("#s2-label", { x: -30, opacity: 0, duration: 0.4, ease: "power3.out" }, 6.3);
+    tl.from("#s2-question", { y: 25, opacity: 0, duration: 0.6, ease: "power2.out" }, 6.6);
+    tl.from("#s2-constraint", { y: 15, opacity: 0, duration: 0.4, ease: "power2.out" }, 7.5);
+    tl.from("#s2-array-box", { scale: 0.95, opacity: 0, duration: 0.5, ease: "power3.out" }, 8.5);
+    tl.from("#s2-n0", { y: -25, opacity: 0, duration: 0.3, ease: "back.out(1.7)" }, 9.0);
+    tl.from("#s2-n1", { y: -25, opacity: 0, duration: 0.3, ease: "back.out(1.7)" }, 9.15);
+    tl.from("#s2-n2", { y: -25, opacity: 0, duration: 0.3, ease: "back.out(1.7)" }, 9.3);
+    tl.from("#s2-n3", { y: -25, opacity: 0, duration: 0.3, ease: "back.out(1.7)" }, 9.45);
+    tl.from("#s2-target-box", { scale: 0.9, opacity: 0, duration: 0.4, ease: "power3.out" }, 9.8);
+    // 高亮 2+7=9
+    tl.to("#s2-n0", { borderColor: "#FCA311", color: "#FCA311", duration: 0.3 }, 15.5);
+    tl.to("#s2-n1", { borderColor: "#FCA311", color: "#FCA311", duration: 0.3 }, 15.7);
+    tl.to("#scene2", { opacity: 0, duration: 0.3, ease: "power2.in" }, 25.0);
+    tl.set("#scene2", { visibility: "hidden" }, 25.5);
+
+    // ===== SCENE 3: 解法演示 (25.5s-63s) =====
+    tl.set("#scene3", { opacity: 1, visibility: "visible" }, 25.5);
+    tl.from("#s3-code-panel", { x: -50, opacity: 0, duration: 0.5, ease: "power3.out" }, 25.8);
+    tl.from("#s3-hash-area", { scale: 0.95, opacity: 0, duration: 0.5, ease: "power3.out" }, 26.2);
+
+    // 代码逐行出现 (配合"遍历数组，计算补数" ~34-40s)
+    tl.set("#l1", { className: "s3-code-line active" }, 30.0);
+    tl.set("#l2", { className: "s3-code-line active" }, 30.4);
+    tl.set("#l3", { className: "s3-code-line active" }, 30.8);
+    tl.set("#l4", { className: "s3-code-line active" }, 31.2);
+    tl.set("#l5", { className: "s3-code-line active" }, 31.6);
+    tl.set("#l6", { className: "s3-code-line active" }, 32.0);
+    tl.set("#l7", { className: "s3-code-line active" }, 32.4);
+
+    // 演示开始: num=2, complement=7 (48.4s "先看到二，补数是七")
+    tl.set("#s3-cur-num", { textContent: "2" }, 48.4);
+    tl.set("#s3-complement", { textContent: "7" }, 48.4);
+    // 存入哈希表 (51.7s "把二存入哈希表")
+    tl.to("#he-2", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 51.7);
+    
+    // 第二步: num=7, complement=2 (56.5s "然后看到七，补数是二")
+    tl.set("#s3-cur-num", { textContent: "7" }, 56.5);
+    tl.set("#s3-complement", { textContent: "2" }, 56.5);
+    // 找到匹配！(59s "二已经在哈希表里")
+    tl.set("#he-2", { className: "s3-hash-entry highlight" }, 59.0);
+    tl.to("#he-2", { scale: 1.12, duration: 0.2, ease: "power2.out" }, 59.1);
+    tl.to("#he-2", { scale: 1.0, duration: 0.2, ease: "power2.out" }, 59.3);
+    // 显示结果 (63s "返回零和一")
+    tl.to("#s3-result", { opacity: 1, scale: 1.1, duration: 0.4, ease: "back.out(1.7)" }, 60.0);
+    tl.to("#s3-result", { scale: 1, duration: 0.3, ease: "power2.out" }, 60.4);
+
+    // 补全哈希表展示
+    tl.to("#he-7", { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 61.0);
+    tl.to("#he-11", { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 61.3);
+    tl.to("#he-15", { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, 61.6);
+
+    tl.to("#scene3", { opacity: 0, duration: 0.3, ease: "power2.in" }, 62.5);
+    tl.set("#scene3", { visibility: "hidden" }, 63.0);
+
+    // ===== SCENE 4: 复杂度 (63s-79s) =====
+    tl.set("#scene4", { opacity: 1, visibility: "visible" }, 63);
+    tl.from("#s4-card1", { x: -60, opacity: 0, duration: 0.5, ease: "power3.out" }, 63.5);
+    tl.from("#s4-card2", { x: 60, opacity: 0, duration: 0.5, ease: "power3.out" }, 63.8);
+    tl.from("#s4-divider", { scaleY: 0, transformOrigin: "center top", duration: 0.4, ease: "power2.out" }, 64.0);
+    tl.from("#s4-summary", { y: 20, opacity: 0, duration: 0.5, ease: "power2.out" }, 65.5);
+    tl.to("#s4-card1", { y: -6, duration: 2, ease: "sine.inOut", repeat: 5, yoyo: true }, 64.5);
+    tl.to("#s4-card2", { y: -6, duration: 2.5, ease: "sine.inOut", repeat: 4, yoyo: true }, 64.5);
+    tl.to("#scene4", { opacity: 0, duration: 0.3, ease: "power2.in" }, 78.5);
+    tl.set("#scene4", { visibility: "hidden" }, 79.0);
+
+    // ===== SCENE 5: CTA (79s-84s) =====
+    tl.set("#scene5", { opacity: 1, visibility: "visible" }, 79);
+    tl.from("#s5-cta-main", { scale: 0.8, opacity: 0, duration: 0.6, ease: "back.out(1.4)" }, 79.3);
+    tl.from("#s5-cta-sub", { opacity: 0, y: 12, duration: 0.4, ease: "power2.out" }, 79.8);
+    tl.from("#s5-cta-icons > div", { y: 15, opacity: 0, duration: 0.35, stagger: 0.12, ease: "back.out(1.7)" }, 80.3);
+    tl.from("#s5-footer", { opacity: 0, duration: 0.4, ease: "power2.out" }, 80.8);
+    tl.to("#scene5", { opacity: 0, duration: 0.3, ease: "power2.in" }, 83.5);
+    tl.set("#scene5", { visibility: "hidden" }, 84.0);
+
+    window.__timelines["test"] = tl;
+  </script>
+</body>
+</html>

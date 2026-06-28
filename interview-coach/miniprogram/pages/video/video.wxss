@@ -1,0 +1,64 @@
+.container { padding-bottom: 60rpx; }
+
+.video-header {
+  padding: 32rpx 24rpx 16rpx;
+}
+.video-num { font-size: 24rpx; color: #4a6080; }
+.video-title { display: block; font-size: 40rpx; font-weight: 700; color: #FCA311; margin-top: 8rpx; }
+
+.video-area {
+  margin: 0 24rpx;
+  background: #0d1326;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.video-placeholder {
+  height: 600rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #162040, #0d1326);
+}
+
+.vp-icon { font-size: 80rpx; margin-bottom: 16rpx; }
+.vp-text { font-size: 32rpx; color: #dce4f0; font-weight: 600; }
+.vp-desc { font-size: 24rpx; color: #4a6080; margin-top: 8rpx; }
+
+/* 题目信息 */
+.info-row {
+  display: flex;
+  margin-bottom: 16rpx;
+}
+.info-label {
+  width: 140rpx;
+  font-size: 26rpx;
+  color: #4a6080;
+  flex-shrink: 0;
+}
+.info-value {
+  flex: 1;
+  font-size: 26rpx;
+  color: #dce4f0;
+}
+.gold { color: #FCA311; }
+
+.code-card-img {
+  width: 100%;
+  border-radius: 12rpx;
+}
+
+/* 评论区引导 */
+.comment-guide {
+  margin: 32rpx 24rpx;
+  padding: 24rpx;
+  background: #162040;
+  border-radius: 16rpx;
+  border-left: 6rpx solid #FCA311;
+}
+.guide-text {
+  font-size: 26rpx;
+  color: #8a9ab5;
+  line-height: 1.6;
+}

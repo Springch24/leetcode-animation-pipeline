@@ -1,0 +1,60 @@
+<view class="container">
+  <!-- 头部 -->
+  <view class="hero">
+    <text class="hero-title">面试逆推器</text>
+    <text class="hero-sub">选公司 · 选岗位 · 2秒出高频题清单</text>
+  </view>
+
+  <!-- Step 1: 选公司 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="step-badge">1</text>
+      <text class="section-title">选择目标公司</text>
+    </view>
+    <view class="company-grid">
+      <view
+        wx:for="{{companies}}"
+        wx:key="name"
+        class="company-item {{selectedCompany === item.name ? 'active' : ''}}"
+        bindtap="selectCompany"
+        data-company="{{item.name}}"
+      >
+        <text class="company-name">{{item.name}}</text>
+        <text class="company-count">{{item.questionCount}}题</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Step 2: 选岗位 -->
+  <view class="section" wx:if="{{selectedCompany}}">
+    <view class="section-header">
+      <text class="step-badge">2</text>
+      <text class="section-title">选择目标岗位</text>
+    </view>
+    <view class="role-list">
+      <view
+        wx:for="{{roles}}"
+        wx:key="*this"
+        class="role-item {{selectedRole === item ? 'active' : ''}}"
+        bindtap="selectRole"
+        data-role="{{item}}"
+      >
+        <text>{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快速搜索 -->
+  <view class="section" wx:if="{{selectedCompany && selectedRole}}">
+    <view class="search-box" bindtap="goSearch">
+      <text class="search-icon">🔍</text>
+      <text class="search-text">{{selectedCompany}} · {{selectedRole}} · 查看高频题</text>
+      <text class="search-arrow">→</text>
+    </view>
+  </view>
+
+  <!-- 底部统计 -->
+  <view class="stats">
+    <text class="stats-text">收录 {{totalQuestions}} 道高频真题 · {{shippedCount}} 道有视频讲解</text>
+  </view>
+</view>

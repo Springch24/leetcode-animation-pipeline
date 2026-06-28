@@ -1,0 +1,41 @@
+.container { padding-bottom: 40rpx; }
+
+.profile-card {
+  text-align: center;
+  padding: 48rpx 0 32rpx;
+}
+.avatar {
+  width: 100rpx; height: 100rpx;
+  background: #162040;
+  border-radius: 50%;
+  margin: 0 auto 16rpx;
+  display: flex; align-items: center; justify-content: center;
+}
+.avatar-text { font-size: 48rpx; }
+.nickname { display: block; font-size: 32rpx; font-weight: 600; color: #dce4f0; }
+.subtitle { display: block; font-size: 24rpx; color: #4a6080; margin-top: 8rpx; }
+
+.stats-row {
+  display: flex; gap: 12rpx; padding: 0 24rpx; margin-bottom: 24rpx;
+}
+.stat-card {
+  flex: 1; background: #0d1326; border-radius: 16rpx; padding: 24rpx; text-align: center;
+}
+.stat-num { display: block; font-size: 40rpx; font-weight: 700; color: #FCA311; }
+.stat-label { font-size: 22rpx; color: #4a6080; margin-top: 4rpx; }
+
+.menu-list { margin: 0 24rpx; background: #0d1326; border-radius: 16rpx; overflow: hidden; }
+.menu-item {
+  display: flex; align-items: center; padding: 28rpx 24rpx; border-bottom: 1rpx solid #162040;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-icon { font-size: 32rpx; margin-right: 16rpx; }
+.menu-text { flex: 1; font-size: 28rpx; color: #dce4f0; }
+.menu-arrow { font-size: 32rpx; color: #4a6080; }
+
+.sub-card { margin-top: 24rpx; }
+.sub-title { display: block; font-size: 28rpx; font-weight: 600; color: #FCA311; margin-bottom: 12rpx; }
+.sub-desc { display: block; font-size: 24rpx; color: #4a6080; margin-bottom: 6rpx; }
+
+.footer { text-align: center; padding: 40rpx 0; }
+.footer-text { font-size: 22rpx; color: #1a2a4a; }

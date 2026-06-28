@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>LeetCode {{NUM}} — {{TITLE_CN}}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1920px;overflow:hidden;background:#060b14;font-family:'JetBrains Mono','Noto Sans SC',sans-serif;color:#dce4f0}
+.scene{position:absolute;inset:0;opacity:0;overflow:hidden}
+.scene-content{width:100%;height:100%;padding:100px 90px;display:flex;flex-direction:column;box-sizing:border-box;position:relative;z-index:2}
+.bg-radial{position:absolute;inset:0;pointer-events:none;z-index:0}
+.bg-glow1{background:radial-gradient(ellipse 80% 50% at 20% 30%,rgba(252,163,17,0.12) 0%,transparent 70%)}
+.bg-glow2{background:radial-gradient(ellipse 60% 40% at 80% 70%,rgba(139,92,246,0.08) 0%,transparent 70%)}
+.bg-grid{position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:80px 80px}
+
+/* Hook banner — 0-3s instant flash */
+.hook-banner{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;opacity:0}
+.hook-line1{font-size:72px;font-weight:900;color:#FCA311;text-align:center;line-height:1.1;padding:0 80px}
+.hook-line2{font-size:42px;color:#dce4f0;text-align:center;margin-top:20px;padding:0 120px}
+.hook-highlight{color:#f87171;font-weight:900}
+.hook-sub{font-size:26px;color:#5a6e8a;margin-top:40px;text-align:center}
+
+/* Title scene */
+.s1-num{font-size:160px;font-weight:900;color:#FCA311;line-height:1}
+.s1-title{font-size:48px;font-weight:700;margin-top:16px}
+.s1-en{font-size:30px;color:#5a6e8a;margin-top:8px}
+.s1-divider{width:120px;height:4px;background:#FCA311;margin:12px 0;border-radius:2px}
+.s1-badges{display:flex;gap:14px;margin-top:8px}
+.s1-badge{font-size:22px;padding:6px 18px;border-radius:20px;font-weight:600}
+.s1-mid{background:rgba(252,163,17,0.12);color:#FCA311;border:1px solid rgba(252,163,17,0.3)}
+.s1-hard{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3)}
+
+/* Concept scene */
+.s2-text{font-size:34px;color:#8ea4c0;line-height:1.7;margin-top:12px}
+.s2-hl{color:#FCA311;font-weight:700}
+
+/* Walkthrough */
+.node-row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin:10px 0}
+.node{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:10px;font-size:22px;font-weight:700}
+.node-def{background:#1a2a3a;color:#dce4f0;border:1px solid #2a3a50}
+.node-pop{background:#FCA311;color:#060b14}
+.node-new{background:#4ade80;color:#060b14}
+.stack-box{background:rgba(13,21,32,0.9);border:2px solid #c084fc;border-radius:12px;padding:14px 20px;margin:10px 0}
+.stack-title{font-size:24px;color:#c084fc;margin-bottom:6px;text-align:center}
+.stack-items{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.stack-item{background:#1a2a3a;color:#c084fc;font-size:22px;font-weight:700;padding:6px 14px;border-radius:8px;border:1px solid #2a3a50}
+.desc-text{font-size:26px;color:#8ea4c0;text-align:center;margin:8px 0}
+.label-text{font-size:28px;color:#8ea4c0;text-align:center;margin:12px 0}
+
+/* Mantra */
+.mantra{font-size:40px;font-weight:700;color:#FCA311;text-align:center;margin-top:16px}
+</style>
+</head>
+<body data-composition-id="leetcode{{NUM}}" data-width="1080" data-height="1920" data-duration="{{DURATION}}">
+
+<!-- S0: Hook (0-3s) -->
+<div class="scene" id="s0">
+<div class="bg-radial bg-glow1"></div><div class="bg-grid"></div>
+<div class="hook-banner">
+<div class="hook-line1">{{HOOK_LINE1}}</div>
+<div class="hook-line2">{{HOOK_LINE2}}</div>
+<div class="hook-sub">{{HOOK_SUB}}</div>
+</div>
+</div>
+
+<!-- S1: Title (3-11s) -->
+<div class="scene" id="s1">
+<div class="bg-radial bg-glow1"></div><div class="bg-radial bg-glow2"></div><div class="bg-grid"></div>
+<div class="scene-content" style="justify-content:center;align-items:center;gap:20px;padding-top:0">
+<div class="s1-num">{{NUM}}</div>
+<div class="s1-title">{{TITLE_CN}}</div>
+<div class="s1-en">{{TITLE_EN}}</div>
+<div class="s1-divider"></div>
+<div class="s1-badges">
+{{BADGES}}
+</div>
+</div>
+</div>
+
+<!-- S2-S5: INSERT PROBLEM-SPECIFIC CONTENT HERE -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+gsap.set("#s0",{opacity:0}); gsap.set("#s1",{opacity:0}); gsap.set("#s2",{opacity:0}); gsap.set("#s3",{opacity:0}); gsap.set("#s4",{opacity:0}); gsap.set("#s5",{opacity:0});
+var tl = gsap.timeline();
+
+// S0: Hook (0-3s) — instant flash
+tl.to("#s0",{opacity:1,duration:0.15})
+  .to("#s0",{opacity:0,duration:0.3},"+=2.5");
+
+// S1: Title (3-11s)
+tl.to("#s1",{opacity:1,duration:0.5})
+  .from("#s1 .s1-num",{y:60,opacity:0,duration:0.6},"+=0.2")
+  .from("#s1 .s1-title",{y:40,opacity:0,duration:0.5},"-=0.2")
+  .from("#s1 .s1-en",{opacity:0,duration:0.4},"+=0.3")
+  .from("#s1 .s1-divider",{width:0,duration:0.4},"+=0.2")
+  .from("#s1 .s1-badges span",{opacity:0,y:20,stagger:0.15,duration:0.4},"+=0.2")
+  .to("#s1",{opacity:0,duration:0.5},"+=0.5");
+
+// INSERT PROBLEM-SPECIFIC GSAP HERE
+
+window.__timelines = [tl];
+</script>
+</body>
+</html>

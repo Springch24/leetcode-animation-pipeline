@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <title>Cover</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1920px; height: 1080px; overflow: hidden;
+      background: #080C14;
+      font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      position: relative;
+    }
+
+    /* ===== STATIC DECORATIVE ELEMENTS ===== */
+    .grid-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background-image:
+        linear-gradient(rgba(30,60,100,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,60,100,0.05) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+    .glow-right {
+      position: absolute; top: -150px; right: -100px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(252,163,17,0.06) 0%, transparent 70%);
+      border-radius: 50%; z-index: 0;
+    }
+    .glow-left {
+      position: absolute; bottom: -200px; left: -150px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(30,100,200,0.07) 0%, transparent 70%);
+      border-radius: 50%; z-index: 0;
+    }
+    .glow-center {
+      position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(252,163,17,0.04) 0%, transparent 70%);
+      border-radius: 50%; z-index: 0;
+    }
+    .scanline {
+      position: absolute; inset: 0; z-index: 50; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px
+      );
+    }
+    /* Decorative code-like dots */
+    .dot-pattern {
+      position: absolute; z-index: 0; opacity: 0.06;
+    }
+    .dots-top-right {
+      top: 80px; right: 80px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; color: #4A6FA5;
+      line-height: 1.8; white-space: pre;
+    }
+
+    /* ===== MAIN CONTAINER ===== */
+    .container {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    /* ===== ORNAMENTAL CORNER LINES ===== */
+    .corner-tl, .corner-tr, .corner-bl, .corner-br {
+      position: absolute; z-index: 2; opacity: 0.3;
+    }
+    .corner-tl { top: 40px; left: 40px; width: 60px; height: 60px; border-top: 2px solid rgba(252,163,17,0.4); border-left: 2px solid rgba(252,163,17,0.4); }
+    .corner-tr { top: 40px; right: 40px; width: 60px; height: 60px; border-top: 2px solid rgba(252,163,17,0.4); border-right: 2px solid rgba(252,163,17,0.4); }
+    .corner-bl { bottom: 40px; left: 40px; width: 60px; height: 60px; border-bottom: 2px solid rgba(252,163,17,0.4); border-left: 2px solid rgba(252,163,17,0.4); }
+    .corner-br { bottom: 40px; right: 40px; width: 60px; height: 60px; border-bottom: 2px solid rgba(252,163,17,0.4); border-right: 2px solid rgba(252,163,17,0.4); }
+
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      position: absolute; top: 60px; left: 0; right: 0;
+      display: flex; justify-content: space-between;
+      align-items: center; padding: 0 120px;
+    }
+    .series-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px; letter-spacing: 0.22em;
+      color: #4A6FA5;
+      border: 1px solid rgba(74,111,165,0.3);
+      padding: 10px 28px; border-radius: 2px;
+    }
+    .problem-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px; color: #FCA311;
+      letter-spacing: 0.1em; font-weight: 700;
+    }
+
+    /* ===== CENTER CONTENT ===== */
+    .center-content { text-align: center; }
+
+    .difficulty-badge {
+      display: inline-block;
+      font-size: 16px; letter-spacing: 0.15em;
+      padding: 10px 28px; border-radius: 3px;
+      margin-bottom: 36px; font-weight: 500;
+    }
+    .diff-easy { color: #4ADE80; border: 1.5px solid rgba(74,222,128,0.4); }
+    .diff-medium { color: #FBBF24; border: 1.5px solid rgba(251,191,36,0.4); }
+    .diff-hard { color: #F87171; border: 1.5px solid rgba(248,113,113,0.4); }
+
+    .main-title {
+      font-size: 130px; font-weight: 900;
+      color: #E8EDF2; letter-spacing: 0.03em;
+      line-height: 1.1;
+    }
+    .accent-dot { color: #FCA311; }
+
+    .subtitle-row {
+      display: flex; gap: 28px; align-items: center;
+      justify-content: center; margin-top: 32px;
+    }
+    .subtitle-tag {
+      font-size: 19px; color: #5C7CA5;
+      border: 1px solid rgba(92,124,165,0.3);
+      padding: 9px 22px; border-radius: 3px;
+      letter-spacing: 0.08em;
+    }
+    .subtitle-sep {
+      width: 6px; height: 6px;
+      background: #FCA311; border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    .divider-line {
+      width: 100px; height: 2px;
+      background: linear-gradient(90deg, transparent, #FCA311, transparent);
+      margin: 44px auto;
+    }
+
+    .desc-text {
+      font-size: 22px; color: #8899B4;
+      letter-spacing: 0.06em; font-weight: 300;
+      line-height: 1.6; max-width: 900px;
+    }
+
+    /* ===== BOTTOM BAR ===== */
+    .bottom-bar {
+      position: absolute; bottom: 60px; left: 0; right: 0;
+      display: flex; justify-content: center;
+      align-items: center; gap: 32px;
+    }
+    .channel-name {
+      font-size: 19px; color: #4A6FA5;
+      letter-spacing: 0.12em; font-weight: 500;
+    }
+    .bottom-dot {
+      width: 4px; height: 4px;
+      background: #FCA311; border-radius: 50%;
+      opacity: 0.4;
+    }
+    .bottom-tagline {
+      font-size: 15px; color: #3A5A80;
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body data-composition-id="cover" data-width="1920" data-height="1080" data-duration="1">
+  <!-- Background Layers -->
+  <div class="grid-overlay"></div>
+  <div class="glow-right"></div>
+  <div class="glow-left"></div>
+  <div class="glow-center"></div>
+  <div class="scanline"></div>
+
+  <!-- Decorative code dots -->
+  <div class="dot-pattern dots-top-right">
+def twoSum(nums, target):
+    hashmap = {}
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in hashmap:
+            return [hashmap[complement], i]
+        hashmap[num] = i
+  </div>
+
+  <!-- Corner accents -->
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="top-bar">
+      <div class="series-tag">LEETCODE HOT 100</div>
+      <div class="problem-number" id="prob-num">#1</div>
+    </div>
+
+    <div class="center-content">
+      <div class="difficulty-badge diff-easy" id="diff-badge">简单</div>
+      <div class="main-title" id="main-title">
+        两数<span class="accent-dot">之</span>和
+      </div>
+      <div class="subtitle-row">
+        <span class="subtitle-tag">动画图解</span>
+        <span class="subtitle-sep"></span>
+        <span class="subtitle-tag">算法可视化</span>
+        <span class="subtitle-sep"></span>
+        <span class="subtitle-tag" id="tag-badge">哈希表</span>
+      </div>
+      <div class="divider-line"></div>
+      <div class="desc-text" id="desc-text">
+        给定一个整数数组 nums 和一个目标值 target<br>
+        请你在该数组中找出和为目标值的那两个整数，并返回它们的数组下标
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="channel-name">自学算法</span>
+      <span class="bottom-dot"></span>
+      <span class="bottom-tagline">每天一道算法题 · 面试不再怕</span>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    var tl = gsap.timeline();
+    tl.set("body", { opacity: 1, duration: 0.01 });
+    window.__timelines = { cover: tl };
+  </script>
+</body>
+</html>

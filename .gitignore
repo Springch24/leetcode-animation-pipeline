@@ -1,0 +1,29 @@
+# Secrets & credentials
+.baoyu-skills/
+.env
+*.mp4
+*.mp3
+*.png
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+tmp_repos/
+/tmp/
+
+# Large data
+videos/*/
+archive/
+
+# Obsidian
+.obsidian/
+.claude/
+.claudian/
+
+# Node
+node_modules/
+bun.lock
+scripts/node_modules/
+scripts/bun.lock
